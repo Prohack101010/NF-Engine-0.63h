@@ -97,6 +97,9 @@ class ClientPrefs {
 		'debug_1'		=> [SEVEN, NONE],
 		'debug_2'		=> [EIGHT, NONE]
 	];
+	
+	public static var NoteSkin:String = 'Stepmania';
+	
 	public static var defaultKeys:Map<String, Array<FlxKey>> = null;
 
 	public static function loadDefaultKeys() {
@@ -111,6 +114,7 @@ class ClientPrefs {
 		FlxG.save.data.storageType = storageType;
 		#end
 		#end
+		FlxG.save.data.NoteSkin = NoteSkin;
 		FlxG.save.data.mobileCAlpha = mobileCAlpha;
 		FlxG.save.data.mobileCEx = mobileCEx;
 		FlxG.save.data.hitboxType = hitboxType;
@@ -193,6 +197,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.middleScroll != null) {
 			middleScroll = FlxG.save.data.middleScroll;
+		}
+		if(FlxG.save.data.NoteSkin != null) {
+			NoteSkin = FlxG.save.data.NoteSkin;
 		}
 		if(FlxG.save.data.opponentStrums != null) {
 			opponentStrums = FlxG.save.data.opponentStrums;

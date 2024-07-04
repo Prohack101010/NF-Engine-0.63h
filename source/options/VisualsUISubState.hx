@@ -29,6 +29,8 @@ using StringTools;
 
 class VisualsUISubState extends BaseOptionsMenu
 {
+    var noteSkinList:Array<String> = CoolUtil.coolTextFile(SUtil.getStorageDirectory() + Paths.getPreloadPath('images/NoteSkin/DataSet/noteSkinList.txt'));
+
 	public function new()
 	{
 		title = 'Visuals and UI';
@@ -40,6 +42,17 @@ class VisualsUISubState extends BaseOptionsMenu
 			'bool',
 			true);
 		addOption(option);
+		
+		var option:Option = new Option('Note Skin',
+			"Choose Note Skin",
+			'NoteSkin',
+			'string',
+			'original',
+			noteSkinList);
+	    
+	    option.showNote = true;
+		addOption(option);
+		option.onChange = onChangeNoteSkin;
 
 		var option:Option = new Option('Hide HUD',
 			'If checked, hides most HUD elements.',
@@ -151,4 +164,43 @@ class VisualsUISubState extends BaseOptionsMenu
 			Main.fpsVar.visible = ClientPrefs.showFPS;
 	}
 	#end
+	
+	function onChangeNoteSkin()
+	{
+		
+		//ClientPrefs.NoteSkin = FlxG.save.data.NoteSkin;    
+		
+        remove(grpNote);
+		
+		grpNote = new FlxTypedGroup<FlxSprite>();
+		add(grpNote);
+		
+		//option.showNote = false;
+		
+		for (i in 0...ClientPrefs.arrowHSV.length) {
+				var notes:FlxSprite = new FlxSprite((i * 125), 100);
+				if (ClientPrefs.NoteSkin != 'original')  {
+				notes.frames = Paths.getSparrowAtlas('NoteSkin/' + ClientPrefs.NoteSkin);
+				}    
+				else{
+				    notes.frames = Paths.getSparrowAtlas('NOTE_assets');
+				}
+				var animations:Array<String> = ['purple0', 'blue0', 'green0', 'red0'];
+				notes.animation.addByPrefix('idle', animations[i]);
+				notes.animation.play('idle');
+				//showNotes = notes.visible;
+				notes.scale.set(0.8, 0.8);
+				notes.x += 700;
+				notes.antialiasing = ClientPrefs.globalAntialiasing;
+				grpNote.add(notes);
+				
+				var newShader:ColorSwap = new ColorSwap();
+			    notes.shader = newShader.shader;
+			    newShader.hue = ClientPrefs.arrowHSV[i][0] / 360;
+			    newShader.saturation = ClientPrefs.arrowHSV[i][1] / 100;
+			    newShader.brightness = ClientPrefs.arrowHSV[i][2] / 100;
+			    
+		}
+		
+	}
 }
