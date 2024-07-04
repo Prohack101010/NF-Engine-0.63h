@@ -25,30 +25,6 @@ import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
 
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.addons.display.FlxGridOverlay;
-import flixel.group.FlxGroup.FlxTypedGroup;
-import flixel.math.FlxMath;
-import flixel.text.FlxText;
-import flixel.util.FlxColor;
-import lime.utils.Assets;
-import flixel.FlxSubState;
-import flash.text.TextField;
-import flixel.FlxG;
-import flixel.FlxSprite;
-import flixel.util.FlxSave;
-import haxe.Json;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxTimer;
-import flixel.input.keyboard.FlxKey;
-import flixel.graphics.FlxGraphic;
-import haxe.Json;
-import haxe.format.JsonParser;
-import Controls;
-
 using StringTools;
 
 class VisualsUISubState extends BaseOptionsMenu
@@ -194,10 +170,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		
 		//ClientPrefs.NoteSkin = FlxG.save.data.NoteSkin;    
 		
-        remove(grpNote);
+        remove(grpNotes);
 		
-		grpNote = new FlxTypedGroup<FlxSprite>();
-		add(grpNote);
+		grpNotes = new FlxTypedGroup<FlxSprite>();
+		add(grpNotes);
 		
 		//option.showNote = false;
 		
@@ -216,7 +192,7 @@ class VisualsUISubState extends BaseOptionsMenu
 				notes.scale.set(0.8, 0.8);
 				notes.x += 700;
 				notes.antialiasing = ClientPrefs.globalAntialiasing;
-				grpNote.add(notes);
+				grpNotes.add(notes);
 				
 				var newShader:ColorSwap = new ColorSwap();
 			    notes.shader = newShader.shader;
