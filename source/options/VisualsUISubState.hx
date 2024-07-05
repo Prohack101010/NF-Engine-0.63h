@@ -24,6 +24,8 @@ import flixel.util.FlxTimer;
 import flixel.input.keyboard.FlxKey;
 import flixel.graphics.FlxGraphic;
 import Controls;
+//noteskin
+import haxe.format.JsonParser;
 
 using StringTools;
 
@@ -170,10 +172,10 @@ class VisualsUISubState extends BaseOptionsMenu
 		
 		//ClientPrefs.NoteSkin = FlxG.save.data.NoteSkin;    
 		
-        remove(grpNotes);
+        remove(grpNote);
 		
-		grpNotes = new FlxTypedGroup<FlxSprite>();
-		add(grpNotes);
+		grpNote = new FlxTypedGroup<FlxSprite>();
+		add(grpNote);
 		
 		//option.showNote = false;
 		
@@ -192,7 +194,7 @@ class VisualsUISubState extends BaseOptionsMenu
 				notes.scale.set(0.8, 0.8);
 				notes.x += 700;
 				notes.antialiasing = ClientPrefs.globalAntialiasing;
-				grpNotes.add(notes);
+				grpNote.add(notes);
 				
 				var newShader:ColorSwap = new ColorSwap();
 			    notes.shader = newShader.shader;
