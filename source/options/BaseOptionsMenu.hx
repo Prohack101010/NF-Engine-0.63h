@@ -127,6 +127,9 @@ class BaseOptionsMenu extends MusicBeatSubstate
 		reloadCheckboxes();
 
 		addVirtualPad(LEFT_FULL, A_B_C);
+		
+		grpNote = new FlxTypedGroup<FlxSprite>();
+		add(grpNote);
 	}
 
 	public function addOption(option:Option) {
