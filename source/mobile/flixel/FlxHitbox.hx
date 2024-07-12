@@ -45,6 +45,9 @@ class FlxHitbox extends FlxSpriteGroup
 
 		if (ClientPrefs.mobileCEx)
 			add(hints[4] = createHint(0, offsetFir, FlxG.width, Std.int(FlxG.height / 4), 0xFF0066FF));
+			
+	    if (ClientPrefs.mobileCEx)
+			add(hints[5] = createHint(0, offsetFir, FlxG.width, Std.int(FlxG.height / 5), 0xFF0066FF));
 
 		scrollFactor.set();
 	}

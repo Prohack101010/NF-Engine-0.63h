@@ -97,13 +97,13 @@ class FPS extends TextField
 	@:noCompletion
 	private #if !flash override #end function __enterFrame(deltaTime:Float):Void
 	{
-		currentTime += deltaTime;
+		/*currentTime += deltaTime;
 		times.push(currentTime);
 
 		while (times[0] < currentTime - 1000)
 		{
 			times.shift();
-		}
+		}*/
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
@@ -121,28 +121,14 @@ class FPS extends TextField
 
 			text += os;
 
-            if (ClientPrefs.rainbowFPS)
+            if (!ClientPrefs.rainbowFPS)
     	    {
-    	        if (skippedFrames >= 6)
-    		    {
-    		    	if (currentColor >= ColorArray.length)
-        				currentColor = 0;
-        			textColor = ColorArray[currentColor];
-        			currentColor++;
-        		}
-        		else
+        		textColor = 0xFFFFFFFF;
+        		if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
         		{
-        			skippedFrames++;	
+        			textColor = 0xFFFF0000;
         		}
-        		}
-        		else
-        		{
-        			textColor = 0xFFFFFFFF;
-        			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
-        			{
-        				textColor = 0xFFFF0000;
-        			}
-    			}
+    		}
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
 			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
@@ -152,6 +138,21 @@ class FPS extends TextField
 
 			text += "\n";
 		}
+		
+		if (ClientPrefs.rainbowFPS)
+        {
+            if (skippedFrames >= 6)
+    	{
+        	if (currentColor >= ColorArray.length)
+       			currentColor = 0;
+        	textColor = ColorArray[currentColor];
+        	currentColor++;
+        }
+        else
+        {
+        	skippedFrames++;	
+        }
+        }
 
 		cacheCount = currentCount;
 	}
