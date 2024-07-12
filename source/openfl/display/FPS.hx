@@ -121,6 +121,14 @@ class FPS extends TextField
 			#end
 
 			text += os;
+			
+			if (!ClientPrefs.rainbowFPS)
+            {
+			    if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
+        		{
+        			textColor = 0xFFFF0000;
+        		}
+            }
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
 			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
@@ -148,10 +156,6 @@ class FPS extends TextField
         	else
         	{
         		textColor = 0xFFFFFFFF;
-        		if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
-        		{
-        			textColor = 0xFFFF0000;
-        		}
     		}
 
 		cacheCount = currentCount;
