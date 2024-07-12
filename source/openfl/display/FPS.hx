@@ -90,7 +90,8 @@ class FPS extends TextField
 	0xFF00FF00,
 	0xFFFFFF00,
 	0xFFFF7F00,
-	0xFFFF0000                         
+	0xFFFF0000     
+	                    
 	];
 
 	// Event Handlers
@@ -121,15 +122,6 @@ class FPS extends TextField
 
 			text += os;
 
-            if (!ClientPrefs.rainbowFPS)
-    	    {
-        		textColor = 0xFFFFFFFF;
-        		if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
-        		{
-        			textColor = 0xFFFF0000;
-        		}
-    		}
-
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
 			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
 			text += "\nstageDC: " + Context3DStats.contextDrawCalls(DrawCallContext.STAGE);
@@ -142,17 +134,25 @@ class FPS extends TextField
 		if (ClientPrefs.rainbowFPS)
         {
             if (skippedFrames >= 6)
-    	{
-        	if (currentColor >= ColorArray.length)
-       			currentColor = 0;
-        	textColor = ColorArray[currentColor];
-        	currentColor++;
-        }
-        else
-        {
-        	skippedFrames++;	
-        }
-        }
+    	    {
+    		   	if (currentColor >= ColorArray.length)
+        			currentColor = 0;
+        		textColor = ColorArray[currentColor];
+        		currentColor++;
+        	}
+        	else
+        	{
+        		skippedFrames++;	
+        	}
+        	}
+        	else
+        	{
+        		textColor = 0xFFFFFFFF;
+        		if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
+        		{
+        			textColor = 0xFFFF0000;
+        		}
+    		}
 
 		cacheCount = currentCount;
 	}
