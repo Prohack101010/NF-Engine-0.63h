@@ -1055,31 +1055,8 @@ class FunkinLua {
 			}
 			Reflect.getProperty(getInstance(), obj).remove(Reflect.getProperty(getInstance(), obj)[index]);
 		});
-		
-		// compatibility
-		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String, ?allowMaps:Bool = false)
-		{
-			var myClass:Dynamic = Type.resolveClass(classVar);
-			if (myClass == null)
-			{
-				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
-				return null;
-			}
 
-			var split:Array<String> = variable.split('.');
-			if (split.length > 1)
-			{
-				var obj:Dynamic = getVarInArray(myClass, split[0]);
-				for (i in 1...split.length - 1)
-					obj = getVarInArray(obj, split[i]);
-
-				return getVarInArray(obj, split[split.length - 1]);
-			}
-			return getVarInArray(myClass, variable);
-		});	
-		// end
-
-		Lua_helper.add_callback(lua, "getOldPropertyFromClass", function(classVar:String, variable:String) {
+		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String) {
 			@:privateAccess
 			var killMe:Array<String> = variable.split('.');
 			if(killMe.length > 1) {
@@ -2958,43 +2935,6 @@ class FunkinLua {
 		Reflect.setProperty(instance, variable, value);
 		return true;
 	}
-	public static function getVarInArrayPlus(instance:Dynamic, variable:String, allowMaps:Bool = false):Any
-	{
-		var splitProps:Array<String> = variable.split('[');
-		if (splitProps.length > 1)
-		{
-			var target:Dynamic = null;
-			if (PlayState.instance.variables.exists(splitProps[0]))
-			{
-				var retVal:Dynamic = PlayState.instance.variables.get(splitProps[0]);
-				if (retVal != null)
-					target = retVal;
-			}
-			else
-				target = Reflect.getProperty(instance, splitProps[0]);
-
-			for (i in 1...splitProps.length)
-			{
-				var j:Dynamic = splitProps[i].substr(0, splitProps[i].length - 1);
-				target = target[j];
-			}
-			return target;
-		}
-
-		if (allowMaps && isMap(instance))
-		{
-			// trace(instance);
-			return instance.get(variable);
-		}
-
-		if (PlayState.instance.variables.exists(variable))
-		{
-			var retVal:Dynamic = PlayState.instance.variables.get(variable);
-			if (retVal != null)
-				return retVal;
-		}
-		return Reflect.getProperty(instance, variable);
-	}
 	public static function getVarInArray(instance:Dynamic, variable:String):Any
 	{
 		var shit:Array<String> = variable.split('[');
@@ -3294,14 +3234,6 @@ class FunkinLua {
 			trace(text);
 		}
 		#end
-	}
-	
-	public static function isMap(variable:Dynamic)
-	{
-		// trace(variable);
-		if (variable.exists != null && variable.keyValueIterator != null)
-			return true;
-		return false;
 	}
 
 	function getErrorMessage(status:Int):String {
