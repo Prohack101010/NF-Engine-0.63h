@@ -98,13 +98,13 @@ class FPS extends TextField
 	@:noCompletion
 	private #if !flash override #end function __enterFrame(deltaTime:Float):Void
 	{
-		/*currentTime += deltaTime;
+		currentTime += deltaTime;
 		times.push(currentTime);
 
 		while (times[0] < currentTime - 1000)
 		{
 			times.shift();
-		}*/
+		}
 
 		var currentCount = times.length;
 		currentFPS = Math.round((currentCount + cacheCount) / 2);
