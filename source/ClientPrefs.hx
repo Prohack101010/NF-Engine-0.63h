@@ -13,6 +13,7 @@ class ClientPrefs {
 	public static var storageType:String = "EXTERNAL_DATA";
 	#end
 	#end
+	public static var rainbowFPS:Bool = false;
 	public static var mobileCAlpha:Float = FlxG.onMobile ? 0.6 : 0;
 	public static var mobileCEx:Bool = false;
 	public static var hitboxType:String = "No Gradient";
@@ -114,6 +115,7 @@ class ClientPrefs {
 		FlxG.save.data.storageType = storageType;
 		#end
 		#end
+		FlxG.save.data.rainbowFPS = rainbowFPS;
 		FlxG.save.data.NoteSkin = NoteSkin;
 		FlxG.save.data.mobileCAlpha = mobileCAlpha;
 		FlxG.save.data.mobileCEx = mobileCEx;
@@ -177,6 +179,9 @@ class ClientPrefs {
 		}
 		#end
 		#end
+		if(FlxG.save.data.rainbowFPS != null) {
+			rainbowFPS = FlxG.save.data.rainbowFPS;
+		}
 		if(FlxG.save.data.mobileCAlpha != null) {
 			mobileCAlpha = FlxG.save.data.mobileCAlpha;
 		}
