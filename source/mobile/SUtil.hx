@@ -155,6 +155,7 @@ enum abstract StorageType(String) from String to String
 	final forcedPath = '/storage/emulated/0/';
 	final packageNameLocal = 'com.alonegamer.nfengine';
 	final fileLocal = 'PsychEngine';
+	final fileLocalNF = 'NF Engine';
 
 	public static function fromStr(str:String):StorageType
 	{
@@ -162,6 +163,7 @@ enum abstract StorageType(String) from String to String
 		final EXTERNAL_OBB = AndroidContext.getObbDir();
 		final EXTERNAL_MEDIA = AndroidEnvironment.getExternalStorageDirectory() + '/Android/media/' + lime.app.Application.current.meta.get('packageName');
 		final EXTERNAL = AndroidEnvironment.getExternalStorageDirectory() + '/.' + lime.app.Application.current.meta.get('file');
+		final EXTERNAL_NFENGINE = AndroidEnvironment.getExternalStorageDirectory() + '/.' + lime.app.Application.current.meta.get('nf');
 
 		return switch (str)
 		{
@@ -169,6 +171,7 @@ enum abstract StorageType(String) from String to String
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
+			case "EXTERNAL_NFENGINE": EXTERNAL_NFENGINE;
 			default: SUtil.getExternalDirectory(str) + '.' + fileLocal;
 		}
 	}
@@ -179,6 +182,7 @@ enum abstract StorageType(String) from String to String
 		final EXTERNAL_OBB = forcedPath + 'Android/obb/' + packageNameLocal;
 		final EXTERNAL_MEDIA = forcedPath + 'Android/media/' + packageNameLocal;
 		final EXTERNAL = forcedPath + '.' + fileLocal;
+		final EXTERNAL_NFENGINE = forcedPath + '.' + fileLocalNF;
 
 		return switch (str)
 		{
@@ -186,6 +190,7 @@ enum abstract StorageType(String) from String to String
 			case "EXTERNAL_OBB": EXTERNAL_OBB;
 			case "EXTERNAL_MEDIA": EXTERNAL_MEDIA;
 			case "EXTERNAL": EXTERNAL;
+			case "EXTERNAL_NFENGINE": EXTERNAL_NFENGINE;
 			default: SUtil.getExternalDirectory(str) + '.' + fileLocal;
 		}
 	}
