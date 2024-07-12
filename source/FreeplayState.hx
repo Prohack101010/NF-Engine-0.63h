@@ -630,4 +630,503 @@ class FreeplayState extends MusicBeatState
 			PlayState.isStoryMode = false;
 			PlayState.storyDifficulty = curDifficulty;
 
+			trace('CURRENT WEEK: ' + WeekData.getWeekFileName());
+			if(colorTween != null) {
+				colorTween.cancel();
+			}
+			
+			if (FlxG.keys.pressed.SHIFT #if mobile || _virtualpad.buttonZ.pressed #end){
+				LoadingState.loadAndSwitchState(new ChartingState());
+			}else{
+				LoadingState.loadAndSwitchState(new PlayState());
+			}
+
+			FlxG.sound.music.volume = 0;
+					
+			destroyFreeplayVocals();
+		}
+		else if(controls.RESET #if mobile || _virtualpad.buttonY.justPressed #end)
+		{
+			#if mobile
+			removeVirtualPad();
+			#end
+			persistentUpdate = false;
+			openSubState(new ResetScoreSubState(songs[curSelected].songName, curDifficulty, songs[curSelected].songCharacter));
+			FlxG.sound.play(Paths.sound('scrollMenu'));
+		}
+		super.update(elapsed);
+	}
+
+	public static function destroyFreeplayVocals() {
+		if(vocals != null) {
+			vocals.stop();
+			vocals.destroy();
+		}
+		vocals = null;
+	}
+	
+	function checkSearch(elapsed:Float)
+	{
+	    lineText.visible = (searchInput.text == '');		
+
+		if (searchCheck != searchInput.text){
+		    searchCheck = searchInput.text;
+		    updateSearch();
+		}
+
+		if (searchInput.text != '' && songNum.length == 0){
+		    notFoundSongTextSine += 180 * elapsed;
+			notFoundSongText.alpha = 1 - Math.sin((Math.PI * notFoundSongTextSine) / 180);
+		}
+		else {
+		    notFoundSongText.alpha = 0;
+		}
+
+		if (FlxG.mouse.justPressed){
+		    if (FlxG.mouse.overlaps(showCaseBG)){
+		        openSearchCheck();
+		        showCaseBG.color = 0xFFFFFFFF;
+		        if (showCaseBGTween != null) showCaseBGTween.cancel();
+                showCaseBGTween = FlxTween.color(showCaseBG, 0.5, 0xFFFFFFFF, 0xFF000000, {ease: FlxEase.sineInOut});                
+		    }
+		    if (FlxG.mouse.overlaps(addDataBG)){
+                ChangeChoose(1);
+                addDataBG.color = 0xFFFFFFFF;
+                if (addBGTween != null) addBGTween.cancel();
+                addBGTween = FlxTween.color(addDataBG, 0.5, 0xFFFFFFFF, 0xFF000000, {ease: FlxEase.sineInOut});
+            }    
+		    if (FlxG.mouse.overlaps(reduceDataBG)){
+		        ChangeChoose(-1);
+		        reduceDataBG.color = 0xFFFFFFFF;
+		        if (reduceBGTween != null) reduceBGTween.cancel();
+		        reduceBGTween = FlxTween.color(reduceDataBG, 0.5, 0xFFFFFFFF, 0xFF000000, {ease: FlxEase.sineInOut});
+		    }
+		}    
+		addDataBG.alpha = 0.6;
+		reduceDataBG.alpha = 0.6;
+		showCaseBG.alpha = 0.6;
+	}
+
+	function openSearchCheck() 
+	{
+	    if (!openSearch){
+	        openSearch = true;
+	        showCaseText.text = '>>';
+	        moveSearch('open');
+	    }
+	    else{
+	        openSearch = false;
+	        showCaseText.text = '<<';
+	        moveSearch('close');
+	    }
+	}
+
+    function moveSearch(Type:String) 
+	{
+	for (i in 0...SearchTween.length){
+	    if (SearchTween[i] != null) SearchTween[i].cancel();
+	    } //close all move
+
+	    var moveTime = 0.25;
+	    if (Type == 'open'){
+	        SearchTween[1] = FlxTween.tween(addDataBG, {x: FlxG.width - CHsize * 2}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[2] = FlxTween.tween(addDataText, {x: FlxG.width - CHsize * 2}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[3] = FlxTween.tween(reduceDataBG, {x: FlxG.width - CHsize * 1}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[4] = FlxTween.tween(reduceDataText, {x: FlxG.width - CHsize * 1}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[5] = FlxTween.tween(centerLine, {x: FlxG.width - CHsize - 0.5}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[6] = FlxTween.tween(upLine, {x: FlxG.width - CHsize * 2}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[7] = FlxTween.tween(downLine, {x: FlxG.width - CHsize * 2}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[8] = FlxTween.tween(leftLine, {x: FlxG.width - CHsize * 2 - 0.5}, moveTime, {ease: FlxEase.expoInOut});
+	        
+	        SearchTween[9] = FlxTween.tween(camSearch, {y: -1}, moveTime, {ease: FlxEase.expoInOut});
+	        
+	    }
+	    else{
+	        SearchTween[1] = FlxTween.tween(addDataBG, {x: FlxG.width + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[2] = FlxTween.tween(addDataText, {x: FlxG.width + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[3] = FlxTween.tween(reduceDataBG, {x: FlxG.width + CHsize + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[4] = FlxTween.tween(reduceDataText, {x: FlxG.width + CHsize + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[5] = FlxTween.tween(centerLine, {x: FlxG.width + CHsize - 0.5 + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[6] = FlxTween.tween(upLine, {x: FlxG.width + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[7] = FlxTween.tween(downLine, {x: FlxG.width + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        SearchTween[8] = FlxTween.tween(leftLine, {x: FlxG.width - 0.5 + showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	        
+	        SearchTween[9] = FlxTween.tween(camSearch, {y: -300 - showOffset}, moveTime, {ease: FlxEase.expoInOut});
+	    }
+	}
+
+	function updateSearch()
+	{
+	    songName = [];
+	    songNum = [];
+		var searchString:String = searchInput.text;
+		for (i in 0...songs.length)
+		{
+			var name:String = songs[i].songName.toLowerCase();
+			if (name.indexOf(searchString.toLowerCase()) != -1 && searchInput.text != '')
+			{
+				songName.push(songs[i].songName);
+				songNum.push(i);
+			}
+		}
+
+       if (searchInput.text != ''){
+    		for (i in 0...searchSongNamesTexts.length)
+    		{
+    		    var numFix:Int = i + 1;
+    			var songNameText:FlxText = searchSongNamesTexts.members[i];
+    			if (songName[i] != null) songNameText.text = numFix + ': ' + songName[i];
+    			else songNameText.text = '';
+    		}
+    	}	
+		    else{
+    		for (i in 0...searchSongNamesTexts.length)
+    		{
+    			var songNameText:FlxText = searchSongNamesTexts.members[i];
+    			songNameText.text = '';
+		    }
+		}
+
+		startShow = 0;
+        chooseShow = 0;
+        
+        chooseBG.alpha = 0;
+        chooseBG.y = showY + 100;
+        
+        checkPosition();
+        
+	}
+	
 		
+	function ChangeChoose(change:Int = 0)
+	{
+	checkPosition();
+	
+	if (change > 0 && songNum.length != 0){
+            if(!isEnd){
+                if (chooseShow < maxDown) chooseShow++;
+                else if (chooseShow == maxDown){
+                    startShow++;
+                    updateSongText();
+                }
+            }
+            else{
+                if (chooseShow < maxDown) chooseShow++;
+                else if (chooseShow == maxDown){
+                    startShow = 0;              
+                    chooseShow = 1;
+                    updateSongText();
+                }
+            }
+        }
+        
+        if (change < 0 && songNum.length != 0){
+            if (!isStart){
+                if (chooseShow > maxUP) chooseShow--;
+                else if (chooseShow == maxUP) {                
+                    startShow--;
+                    updateSongText();
+                }
+            }
+            else{
+                if (chooseShow > maxUP) chooseShow--;
+                else if (chooseShow == maxUP){
+                    if (songNum.length >= 5){
+                    startShow = songNum.length - 5;
+                        chooseShow = 5;
+                        updateSongText();
+                    }
+                    else{
+                        startShow = 0;
+                        chooseShow = songNum.length;
+                        updateSongText();
+                    }               
+                }    
+            }
+        }
+        
+        if (chooseShow < 0) chooseShow = 0; //fix someone press up at start
+
+	    if (chooseShow >= 1 && chooseShow <= 5){
+		    chooseBG.y = showY + 100 + (chooseShow - 1) * 40;
+		}
+		
+		if (searchSongNamesTexts.members[0].text != '' && chooseShow >= 1 && chooseShow <= 5){
+            chooseBG.alpha = 0.6;
+        }
+        else{
+            chooseBG.y = showY + 100;
+        }
+		
+		var realChoose:Int = startShow + chooseShow; 
+		realChoose -= 1; // -1 is fix code to 0
+		if (realChoose >= 0 && realChoose <= songNum.length){
+		    curSelected = songNum[realChoose]; //main move freeplay choose
+		    SearchChangeSelection(true);
+		}
+	}
+
+	function updateSongText()
+	{
+	    var numStart = startShow;
+	    var numEnd = startShow + 5;
+	    for (num in numStart...numEnd)
+    		{
+    		    var numFix:Int = num + 1;
+    			var songNameText:FlxText = searchSongNamesTexts.members[num - numStart];
+    			if (songName[num] != null) songNameText.text = numFix + ': ' + songName[num];
+    			else songNameText.text = '';
+    		}
+	}
+	
+	function checkPosition()
+	{
+	    if((startShow + 5) >= songNum.length) isEnd = true;
+	    else isEnd = false;
+	    if(startShow == 0) isStart = true;
+	    else isStart = false;
+
+	    if (songNum.length >= 5){
+		    maxDown = 4;
+		}
+		else {
+		    maxDown = songNum.length;
+		}
+
+		if (songNum.length <= 5){
+		    maxUP = 1;
+		}
+		else{
+		    maxUP = 2;
+		}
+
+		if (isStart) maxUP = 1;
+		if (isEnd) maxDown = 5;	
+		
+		if (songNum.length < 5) maxDown = songNum.length; //check again
+		if (songNum.length < 2) maxUP = 1; //check again
+	}
+	
+	function SearchChangeSelection(playSound:Bool = true)
+	{
+		if(playSound) FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
+		var newColor:Int = songs[curSelected].color;
+		if(newColor != intendedColor) {
+			if(colorTween != null) {
+				colorTween.cancel();
+			}
+			intendedColor = newColor;
+			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
+				onComplete: function(twn:FlxTween) {
+					colorTween = null;
+				}
+			});
+		}
+
+		// selector.y = (70 * curSelected) + 30;
+
+		var bullShit:Int = 0;
+
+		for (i in 0...iconArray.length)
+		{
+			iconArray[i].alpha = 0.6;
+		}
+
+		iconArray[curSelected].alpha = 1;
+
+		for (item in grpSongs.members)
+		{
+			bullShit++;
+			item.alpha = 0.6;
+			if (item.targetY == curSelected)
+				item.alpha = 1;
+		}
+
+		Paths.currentModDirectory = songs[curSelected].folder;
+		PlayState.storyWeek = songs[curSelected].week;
+
+		CoolUtil.difficulties = CoolUtil.defaultDifficulties.copy();
+		var diffStr:String = WeekData.getCurrentWeek().difficulties;
+		if(diffStr != null) diffStr = diffStr.trim(); //Fuck you HTML5
+
+		if(diffStr != null && diffStr.length > 0)
+		{
+			var diffs:Array<String> = diffStr.split(',');
+			var i:Int = diffs.length - 1;
+			while (i > 0)
+			{
+				if(diffs[i] != null)
+				{
+					diffs[i] = diffs[i].trim();
+					if(diffs[i].length < 1) diffs.remove(diffs[i]);
+				}
+				--i;
+			}
+
+			if(diffs.length > 0 && diffs[0].length > 0)
+			{
+				CoolUtil.difficulties = diffs;
+			}
+		}
+		
+		if(CoolUtil.difficulties.contains(CoolUtil.defaultDifficulty))
+		{
+			curDifficulty = Math.round(Math.max(0, CoolUtil.defaultDifficulties.indexOf(CoolUtil.defaultDifficulty)));
+		}
+		else
+		{
+			curDifficulty = 0;
+		}
+	}
+	
+	function changeDiff(change:Int = 0)
+	{
+		curDifficulty += change;
+
+		if (curDifficulty < 0)
+			curDifficulty = CoolUtil.difficulties.length-1;
+		if (curDifficulty >= CoolUtil.difficulties.length)
+			curDifficulty = 0;
+
+		#if !switch
+		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedRating = Highscore.getRating(songs[curSelected].songName, curDifficulty);
+		#end
+
+		lastDifficultyName = CoolUtil.difficulties[curDifficulty];
+		if (CoolUtil.difficulties.length > 1)
+			diffText.text = '< ' + lastDifficultyName.toUpperCase() + ' >';
+		else
+			diffText.text = lastDifficultyName.toUpperCase();
+
+		positionHighscore();
+	}
+
+	function changeSelection(change:Int = 0, playSound:Bool = true)
+	{
+		if(playSound) FlxG.sound.play(Paths.sound('scrollMenu'), 0.4);
+
+		curSelected += change;
+
+		if (curSelected < 0)
+			curSelected = songs.length - 1;
+		if (curSelected >= songs.length)
+			curSelected = 0;
+			
+		var newColor:Int = songs[curSelected].color;
+		if(newColor != intendedColor) {
+			if(colorTween != null) {
+				colorTween.cancel();
+			}
+			intendedColor = newColor;
+			colorTween = FlxTween.color(bg, 1, bg.color, intendedColor, {
+				onComplete: function(twn:FlxTween) {
+					colorTween = null;
+				}
+			});
+		}
+
+		// selector.y = (70 * curSelected) + 30;
+
+		#if !switch
+		intendedScore = Highscore.getScore(songs[curSelected].songName, curDifficulty);
+		intendedRating = Highscore.getRating(songs[curSelected].songName, curDifficulty);
+		#end
+
+		var bullShit:Int = 0;
+
+		for (i in 0...iconArray.length)
+		{
+			iconArray[i].alpha = 0.6;
+		}
+
+		iconArray[curSelected].alpha = 1;
+
+		for (item in grpSongs.members)
+		{
+			item.targetY = bullShit - curSelected;
+			bullShit++;
+
+			item.alpha = 0.6;
+			// item.setGraphicSize(Std.int(item.width * 0.8));
+
+			if (item.targetY == 0)
+			{
+				item.alpha = 1;
+				// item.setGraphicSize(Std.int(item.width));
+			}
+		}
+		
+		Paths.currentModDirectory = songs[curSelected].folder;
+		PlayState.storyWeek = songs[curSelected].week;
+
+		CoolUtil.difficulties = CoolUtil.defaultDifficulties.copy();
+		var diffStr:String = WeekData.getCurrentWeek().difficulties;
+		if(diffStr != null) diffStr = diffStr.trim(); //Fuck you HTML5
+
+		if(diffStr != null && diffStr.length > 0)
+		{
+			var diffs:Array<String> = diffStr.split(',');
+			var i:Int = diffs.length - 1;
+			while (i > 0)
+			{
+				if(diffs[i] != null)
+				{
+					diffs[i] = diffs[i].trim();
+					if(diffs[i].length < 1) diffs.remove(diffs[i]);
+				}
+				--i;
+			}
+
+			if(diffs.length > 0 && diffs[0].length > 0)
+			{
+				CoolUtil.difficulties = diffs;
+			}
+		}
+		
+		if(CoolUtil.difficulties.contains(CoolUtil.defaultDifficulty))
+		{
+			curDifficulty = Math.round(Math.max(0, CoolUtil.defaultDifficulties.indexOf(CoolUtil.defaultDifficulty)));
+		}
+		else
+		{
+			curDifficulty = 0;
+		}
+
+		var newPos:Int = CoolUtil.difficulties.indexOf(lastDifficultyName);
+		//trace('Pos of ' + lastDifficultyName + ' is ' + newPos);
+		if(newPos > -1)
+		{
+			curDifficulty = newPos;
+		}
+	}
+
+	private function positionHighscore() {
+		scoreText.x = FlxG.width - scoreText.width - 6;
+
+		scoreBG.scale.x = FlxG.width - scoreText.x + 6;
+		scoreBG.x = FlxG.width - (scoreBG.scale.x / 2);
+		diffText.x = Std.int(scoreBG.x + (scoreBG.width / 2));
+		diffText.x -= diffText.width / 2;
+	}
+}
+
+class SongMetadata
+{
+	public var songName:String = "";
+	public var week:Int = 0;
+	public var songCharacter:String = "";
+	public var color:Int = -7179779;
+	public var folder:String = "";
+
+	public function new(song:String, week:Int, songCharacter:String, color:Int)
+	{
+		this.songName = song;
+		this.week = week;
+		this.songCharacter = songCharacter;
+		this.color = color;
+		this.folder = Paths.currentModDirectory;
+		if(this.folder == null) this.folder = '';
+	}
+}
