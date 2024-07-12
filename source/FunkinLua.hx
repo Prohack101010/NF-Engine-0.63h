@@ -997,8 +997,7 @@ class FunkinLua {
 		// compatibility
 		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String, ?allowMaps:Bool = false)
 		{
-			var myClass:Dynamic = Type.resolveClass(classVar);
-			if (myClass == null)
+			if (Type.resolveClass(classVar) == null)
 			{
 				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
 				return null;
@@ -1007,19 +1006,18 @@ class FunkinLua {
 			var split:Array<String> = variable.split('.');
 			if (split.length > 1)
 			{
-				var obj:Dynamic = getVarInArray(myClass, split[0], allowMaps);
+				var obj:Dynamic = getVarInArray(Type.resolveClass(classVar), split[0], allowMaps);
 				for (i in 1...split.length - 1)
 					obj = getVarInArray(obj, split[i], allowMaps);
 
 				return getVarInArray(obj, split[split.length - 1], allowMaps);
 			}
-			return getVarInArray(myClass, variable, allowMaps);
+			return getVarInArray(Type.resolveClass(classVar), variable, allowMaps);
 		});
 		
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic, ?allowMaps:Bool = false)
 		{
-			var myClass:Dynamic = Type.resolveClass(classVar);
-			if (myClass == null)
+			if (Type.resolveClass(classVar) == null)
 			{
 				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
 				return null;
@@ -1028,14 +1026,14 @@ class FunkinLua {
 			var split:Array<String> = variable.split('.');
 			if (split.length > 1)
 			{
-				var obj:Dynamic = getVarInArray(myClass, split[0], allowMaps);
+				var obj:Dynamic = getVarInArray(Type.resolveClass(classVar), split[0], allowMaps);
 				for (i in 1...split.length - 1)
 					obj = getVarInArray(obj, split[i], allowMaps);
 
 				setVarInArray(obj, split[split.length - 1], value, allowMaps);
 				return value;
 			}
-			setVarInArray(myClass, variable, value, allowMaps);
+			setVarInArray(Type.resolveClass(classVar), variable, value, allowMaps);
 			return value;
 		});
 		
