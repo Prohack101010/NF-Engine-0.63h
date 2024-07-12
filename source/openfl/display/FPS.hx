@@ -141,7 +141,7 @@ class FPS extends TextField
 		
 		if (ClientPrefs.rainbowFPS)
         {
-            if (skippedFrames >= 6)
+            if (skippedFrames >= 20)
     	    {
     		   	if (currentColor >= ColorArray.length)
         			currentColor = 0;
