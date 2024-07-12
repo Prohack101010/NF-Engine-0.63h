@@ -3295,6 +3295,14 @@ class FunkinLua {
 		}
 		#end
 	}
+	
+	public static function isMap(variable:Dynamic)
+	{
+		// trace(variable);
+		if (variable.exists != null && variable.keyValueIterator != null)
+			return true;
+		return false;
+	}
 
 	function getErrorMessage(status:Int):String {
 		#if LUA_ALLOWED
