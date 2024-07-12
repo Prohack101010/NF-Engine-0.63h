@@ -3067,6 +3067,14 @@ class FunkinLua {
 	{
 		return PlayState.instance.modchartTexts.exists(name) ? PlayState.instance.modchartTexts.get(name) : Reflect.getProperty(PlayState.instance, name);
 	}
+	
+	public static function isMap(variable:Dynamic)
+	{
+		// trace(variable);
+		if (variable.exists != null && variable.keyValueIterator != null)
+			return true;
+		return false;
+	}
 
 	#if (!flash && sys)
 	public function getShader(obj:String):FlxRuntimeShader
