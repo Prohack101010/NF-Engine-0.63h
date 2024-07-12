@@ -103,6 +103,7 @@ class MobileOptionsSubState extends BaseOptionsMenu
 		File.saveContent(lime.system.System.applicationStorageDirectory + 'storagetype.txt', ClientPrefs.storageType);
 	
 		var lastStoragePath:String = StorageType.fromStrForce(lastStorageType) + '/';
+	}
 	#end
 
 	override public function destroy() {
