@@ -79,6 +79,19 @@ class FPS extends TextField
 		});
 		#end
 	}
+	
+	public static var currentColor = 0;
+	var skippedFrames = 0;
+		
+	var ColorArray:Array<Int> = [
+	0xFF9400D3,
+	0xFF4B0082,
+	0xFF0000FF,
+	0xFF00FF00,
+	0xFFFFFF00,
+	0xFFFF7F00,
+	0xFFFF0000                         
+	];
 
 	// Event Handlers
 	@:noCompletion
@@ -116,21 +129,20 @@ class FPS extends TextField
         				currentColor = 0;
         			textColor = ColorArray[currentColor];
         			currentColor++;
-        			skippedFrames = 0;
         		}
         		else
         		{
         			skippedFrames++;	
         		}
-    		}
-    		else
-    		{
-			textColor = 0xFFFFFFFF;
-			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
-			{
-				textColor = 0xFFFF0000;
-			}
-			}
+        		}
+        		else
+        		{
+        			textColor = 0xFFFFFFFF;
+        			if (memoryMegas > 3000 || currentFPS <= ClientPrefs.framerate / 2)
+        			{
+        				textColor = 0xFFFF0000;
+        			}
+    			}
 
 			#if (gl_stats && !disable_cffi && (!html5 || !canvas))
 			text += "\ntotalDC: " + Context3DStats.totalDrawCalls();
