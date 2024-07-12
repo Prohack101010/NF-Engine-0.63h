@@ -997,7 +997,8 @@ class FunkinLua {
 		// compatibility
 		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String, ?allowMaps:Bool = false)
 		{
-			if (Type.resolveClass(classVar) == null)
+			var myClass:Dynamic = Type.resolveClass(classVar);
+			if (myClass == null)
 			{
 				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
 				return null;
@@ -1006,18 +1007,19 @@ class FunkinLua {
 			var split:Array<String> = variable.split('.');
 			if (split.length > 1)
 			{
-				var obj:Dynamic = getVarInArray(Type.resolveClass(classVar), split[0], allowMaps);
+				var obj:Dynamic = getVarInArray(myClass, split[0]);
 				for (i in 1...split.length - 1)
-					obj = getVarInArray(obj, split[i], allowMaps);
+					obj = getVarInArray(obj, split[i]);
 
-				return getVarInArray(obj, split[split.length - 1], allowMaps);
+				return getVarInArray(obj, split[split.length - 1]);
 			}
-			return getVarInArray(Type.resolveClass(classVar), variable, allowMaps);
+			return getVarInArray(myClass, variable);
 		});
 		
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic, ?allowMaps:Bool = false)
 		{
-			if (Type.resolveClass(classVar) == null)
+			var myClass:Dynamic = Type.resolveClass(classVar);
+			if (myClass == null)
 			{
 				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
 				return null;
@@ -1026,14 +1028,14 @@ class FunkinLua {
 			var split:Array<String> = variable.split('.');
 			if (split.length > 1)
 			{
-				var obj:Dynamic = getVarInArray(Type.resolveClass(classVar), split[0], allowMaps);
+				var obj:Dynamic = getVarInArray(myClass, split[0]);
 				for (i in 1...split.length - 1)
-					obj = getVarInArray(obj, split[i], allowMaps);
+					obj = getVarInArray(obj, split[i]);
 
-				setVarInArray(obj, split[split.length - 1], value, allowMaps);
+				setVarInArray(obj, split[split.length - 1], value);
 				return value;
 			}
-			setVarInArray(Type.resolveClass(classVar), variable, value, allowMaps);
+			setVarInArray(myClass, variable, value);
 			return value;
 		});
 		
