@@ -993,54 +993,6 @@ class FunkinLua {
 			setVarInArray(getInstance(), variable, value);
 			return true;
 		});
-		
-		// compatibility
-		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String, ?allowMaps:Bool = false)
-		{
-			var myClass:Dynamic = Type.resolveClass(classVar);
-			if (myClass == null)
-			{
-				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
-				return null;
-			}
-
-			var split:Array<String> = variable.split('.');
-			if (split.length > 1)
-			{
-				var obj:Dynamic = getVarInArray(myClass, split[0]);
-				for (i in 1...split.length - 1)
-					obj = getVarInArray(obj, split[i]);
-
-				return getVarInArray(obj, split[split.length - 1]);
-			}
-			return getVarInArray(myClass, variable);
-		});
-		
-		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic, ?allowMaps:Bool = false)
-		{
-			var myClass:Dynamic = Type.resolveClass(classVar);
-			if (myClass == null)
-			{
-				luaTrace('getPropertyFromClass: Class $classVar not found', false, false, FlxColor.RED);
-				return null;
-			}
-
-			var split:Array<String> = variable.split('.');
-			if (split.length > 1)
-			{
-				var obj:Dynamic = getVarInArray(myClass, split[0]);
-				for (i in 1...split.length - 1)
-					obj = getVarInArray(obj, split[i]);
-
-				setVarInArray(obj, split[split.length - 1], value);
-				return value;
-			}
-			setVarInArray(myClass, variable, value);
-			return value;
-		});
-		
-		// end
-		
 		Lua_helper.add_callback(lua, "getPropertyFromGroup", function(obj:String, index:Int, variable:Dynamic) {
 			var shitMyPants:Array<String> = obj.split('.');
 			var realObject:Dynamic = Reflect.getProperty(getInstance(), obj);
@@ -1103,7 +1055,8 @@ class FunkinLua {
 			}
 			Reflect.getProperty(getInstance(), obj).remove(Reflect.getProperty(getInstance(), obj)[index]);
 		});
-
+		
+		// compatibility
 		Lua_helper.add_callback(lua, "getPropertyFromClass", function(classVar:String, variable:String, ?allowMaps:Bool = false)
 		{
 			var myClass:Dynamic = Type.resolveClass(classVar);
@@ -1116,13 +1069,27 @@ class FunkinLua {
 			var split:Array<String> = variable.split('.');
 			if (split.length > 1)
 			{
-				var obj:Dynamic = getVarInArrayPlus(myClass, split[0], allowMaps);
+				var obj:Dynamic = getVarInArray(myClass, split[0]);
 				for (i in 1...split.length - 1)
-					obj = getVarInArrayPlus(obj, split[i], allowMaps);
+					obj = getVarInArray(obj, split[i]);
 
-				return getVarInArrayPlus(obj, split[split.length - 1], allowMaps);
+				return getVarInArray(obj, split[split.length - 1]);
 			}
-			return getVarInArrayPlus(myClass, variable, allowMaps);
+			return getVarInArray(myClass, variable);
+		});	
+		// end
+
+		Lua_helper.add_callback(lua, "getOldPropertyFromClass", function(classVar:String, variable:String) {
+			@:privateAccess
+			var killMe:Array<String> = variable.split('.');
+			if(killMe.length > 1) {
+				var coverMeInPiss:Dynamic = getVarInArray(Type.resolveClass(classVar), killMe[0]);
+				for (i in 1...killMe.length-1) {
+					coverMeInPiss = getVarInArray(coverMeInPiss, killMe[i]);
+				}
+				return getVarInArray(coverMeInPiss, killMe[killMe.length-1]);
+			}
+			return getVarInArray(Type.resolveClass(classVar), variable);
 		});
 		Lua_helper.add_callback(lua, "setPropertyFromClass", function(classVar:String, variable:String, value:Dynamic) {
 			@:privateAccess
@@ -2991,7 +2958,6 @@ class FunkinLua {
 		Reflect.setProperty(instance, variable, value);
 		return true;
 	}
-	
 	public static function getVarInArrayPlus(instance:Dynamic, variable:String, allowMaps:Bool = false):Any
 	{
 		var splitProps:Array<String> = variable.split('[');
@@ -3029,7 +2995,6 @@ class FunkinLua {
 		}
 		return Reflect.getProperty(instance, variable);
 	}
-	
 	public static function getVarInArray(instance:Dynamic, variable:String):Any
 	{
 		var shit:Array<String> = variable.split('[');
@@ -3066,14 +3031,6 @@ class FunkinLua {
 	inline static function getTextObject(name:String):FlxText
 	{
 		return PlayState.instance.modchartTexts.exists(name) ? PlayState.instance.modchartTexts.get(name) : Reflect.getProperty(PlayState.instance, name);
-	}
-	
-	public static function isMap(variable:Dynamic)
-	{
-		// trace(variable);
-		if (variable.exists != null && variable.keyValueIterator != null)
-			return true;
-		return false;
 	}
 
 	#if (!flash && sys)
