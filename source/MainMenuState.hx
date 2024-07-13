@@ -60,10 +60,6 @@ class MainMenuState extends MusicBeatState
 	
 	
 	var bgMove:FlxBackdrop;
-	public static var Mainbpm:Float = 0;
-	public static var bpm:Float = 0;
-	var SoundTime:Float = 0;
-	var BeatTime:Float = 0;
 	
 	var ColorArray:Array<Int> = [
 		0xFF9400D3,
@@ -83,9 +79,6 @@ class MainMenuState extends MusicBeatState
 	{
 		Paths.clearStoredMemory();
 		Paths.clearUnusedMemory();
-		
-        Mainbpm = TitleState.bpm;
-        bpm = TitleState.bpm;
         
 		#if MODS_ALLOWED
 		Paths.pushGlobalMods();
@@ -377,7 +370,7 @@ class MainMenuState extends MusicBeatState
 				MusicBeatState.switchState(new TitleState());
 			}	
 				
-			else if (_virtualpad.buttonZ.justPressed)
+			else if (virtualPad.buttonZ.justPressed)
 			{
 				selectedSomethin = true;
 		        FlxTransitionableState.skipNextTransIn = true;
@@ -385,28 +378,27 @@ class MainMenuState extends MusicBeatState
 			    MusicBeatState.switchState(new options.OptionsState());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'));
 			}
-				
-			else if (_virtualpad.buttonD.justPressed)
+			
+			/*	
+			else if (virtualPad.buttonD.justPressed)
 			{
 				selectedSomethin = true;
 		        FlxTransitionableState.skipNextTransIn = true;
 			    FlxTransitionableState.skipNextTransOut = true;
 			    MusicBeatState.switchState(new android.AndroidControlsMenu());
 			}
+			*/
 			
-			#if (desktop || android)
-			else if (FlxG.keys.anyJustPressed(debugKeys) #if mobile || _virtualpad.buttonE.justPressed #end)
+			else if (FlxG.keys.anyJustPressed(debugKeys) #if mobile || virtualPad.buttonE.justPressed #end)
 			{
 				selectedSomethin = true;
 				MusicBeatState.switchState(new MasterEditorMenu());
 			}
-			#end 
 		}
        
-        SoundTime = FlxG.sound.music.time / 1000;
-        BeatTime = 60 / bpm;
         
-        if ( Math.floor(SoundTime/BeatTime) % 4  == 0 && canClick && canBeat) {
+        /* idk what is this
+        if (canClick && canBeat) {
         
             canBeat = false;
            
@@ -432,13 +424,9 @@ class MainMenuState extends MusicBeatState
             
         }
         if ( Math.floor(SoundTime/BeatTime + 0.5) % 4  == 2) canBeat = true;        
+        */
         
         bgMove.alpha = 0.1;
-        /*
-        test1.text = "time: " + SoundTime;
-        test2.text = "beatTime: " + BeatTime;
-        test3.text = "startbeat: " + ((SoundTime / BeatTime) % 4);
-        */
 		
 
 		menuItems.forEach(function(spr:FlxSprite)
