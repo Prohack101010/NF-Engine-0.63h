@@ -245,7 +245,7 @@ class MainMenuState extends MusicBeatState
 		add(test3);
         */
         
-		addVirtualPad(UP_DOWN, A_B_E);
+		addVirtualPad(NONE, A_B_E);
 		
 		
 
@@ -264,7 +264,6 @@ class MainMenuState extends MusicBeatState
 	var selectedSomethin:Bool = false;
 	
 	var canClick:Bool = true;
-	var canBeat:Bool = true;
 	var usingMouse:Bool = true;
 
 	override function update(elapsed:Float)
