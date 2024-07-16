@@ -14,6 +14,7 @@ class ClientPrefs {
 	#end
 	#end
 	public static var rainbowFPS:Bool = false;
+	public static var gradientTimeBar:Bool = true;
 	public static var mobileCAlpha:Float = FlxG.onMobile ? 0.6 : 0;
 	public static var mobileCEx:Bool = false;
 	public static var hitboxType:String = "No Gradient";
@@ -116,6 +117,7 @@ class ClientPrefs {
 		#end
 		#end
 		FlxG.save.data.rainbowFPS = rainbowFPS;
+		FlxG.save.data.gradientTimeBar = gradientTimeBar;
 		FlxG.save.data.NoteSkin = NoteSkin;
 		FlxG.save.data.mobileCAlpha = mobileCAlpha;
 		FlxG.save.data.mobileCEx = mobileCEx;
@@ -181,6 +183,9 @@ class ClientPrefs {
 		#end
 		if(FlxG.save.data.rainbowFPS != null) {
 			rainbowFPS = FlxG.save.data.rainbowFPS;
+		}
+		if(FlxG.save.data.gradientTimeBar != null) {
+			gradientTimeBar = FlxG.save.data.gradientTimeBar;
 		}
 		if(FlxG.save.data.mobileCAlpha != null) {
 			mobileCAlpha = FlxG.save.data.mobileCAlpha;
